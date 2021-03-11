@@ -59,7 +59,7 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 
-const displayMovements = function (movements) {
+const calcDisplayMovements = function (movements) {
     containerMovements.innerHTML = '';
     movements.forEach(function (mov, i) {
         const type = mov > 0 ? 'deposit' : 'withdrawal';
@@ -71,4 +71,27 @@ const displayMovements = function (movements) {
        containerMovements.insertAdjacentHTML('afterbegin', html);
     })
 }
-displayMovements(account1.movements);
+calcDisplayMovements(account1.movements);
+
+
+const calcPrintBalance = function (movements) {
+    const balance = movements.reduce((acc, mov) => acc + mov, 0);
+    labelBalance.textContent = `${balance}EUR`;
+}
+calcPrintBalance(account1.movements);
+
+
+const createUsernames = accounts => {
+    // loop over accounts array
+    accounts.forEach(function (acc) {
+        // on each account object .owner property create new username
+        acc.username = acc.owner
+            .toLowerCase()
+            // split return an array
+            .split(' ')
+            // take first letter of each name
+            .map(name => name[0])
+            .join('');
+    })
+}
+createUsernames(accounts);
