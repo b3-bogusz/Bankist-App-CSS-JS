@@ -73,9 +73,9 @@ const calcDisplayMovements = function (movements) {
 }
 
 
-const calcPrintBalance = function (movements) {
-    const balance = movements.reduce((acc, mov) => acc + mov, 0);
-    labelBalance.textContent = `${balance}€`;
+const calcPrintBalance = function (acc) {
+    acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+    labelBalance.textContent = `${acc.balance}€`;
 }
 
 
@@ -115,6 +115,15 @@ const createUsernames = accounts => {
 createUsernames(accounts);
 
 
+const updateUI = function (acc) {
+    // Display movements acc
+    calcDisplayMovements(acc.movements);
+    // Display balance
+    calcPrintBalance(acc);
+    // Display summary
+    calcDisplaySummary(acc);
+}
+
 // EVENT HANDLERS
 let currentAccount;
 
@@ -129,11 +138,29 @@ btnLogin.addEventListener('click', function (e) {
         containerApp.style.opacity = 1;
         // Clear input fields
         inputLoginUsername.value = inputLoginPin.value = '';
-        // Display movements
-        calcDisplayMovements(currentAccount.movements);
-        // Display balance
-        calcPrintBalance(currentAccount.movements);
-        // Display summary
-        calcDisplaySummary(currentAccount);
+
+        // Update UI
+        updateUI(currentAccount);
+    }
+})
+
+
+btnTransfer.addEventListener('click', function (e) {
+    // Prevent form from submitting
+    e.preventDefault();
+
+    const amount = Number(inputTransferAmount.value);
+    const receiverAccount = accounts.find(acc => acc.username === inputTransferTo.value);
+
+    inputTransferAmount.value = inputTransferTo.value = '';
+
+    // balance need to be above 0, greater than transfer, receiver needs to exist '?', receiver account is different than sender
+    if (amount > 0 && receiverAccount && currentAccount.balance >= amount && receiverAccount?.username !== currentAccount.username) {
+        // Doing the transfer
+        currentAccount.movements.push(-amount);
+        receiverAccount.movements.push(amount);
+
+        // Update UI
+        updateUI(currentAccount);
     }
 })
