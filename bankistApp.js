@@ -164,3 +164,17 @@ btnTransfer.addEventListener('click', function (e) {
         updateUI(currentAccount);
     }
 })
+
+btnClose.addEventListener('click', function (e) {
+    // Prevent form from submitting
+    e.preventDefault();
+
+    if (inputCloseUsername.value === currentAccount.username && Number(inputClosePin.value) === currentAccount.pin){
+        const index = accounts.findIndex(acc => acc.username === currentAccount.username);
+        // splice mutates original array and will remove 1 element with index..
+        accounts.splice(index, 1);
+        // Hide UI
+        containerApp.style.opacity = 0;
+    }
+    inputCloseUsername.value = inputClosePin.value = '';
+})
